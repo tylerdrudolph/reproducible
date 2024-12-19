@@ -28,6 +28,13 @@ test_that("test miscellaneous unit tests cache-helpers", {
   if (requireNamespace("terra", quietly = TRUE)) {
     v <- terra::vect(system.file("ex/lux.shp", package = "terra"))
     expect_true(is(studyAreaName(v), "character"))
+
+    r <- terra::rast(v)
+    expect_true(is(studyAreaName(v, rasterToMatch = r), "character"))
+    rsan <- studyAreaName(v, rasterToMatch = r)
+    vsan <- studyAreaName(v)
+    expect_false(rsan == vsan)
+    expect_true(vsan == studyAreaName(v, dotsArgs = "foo"))
   }
 
   # studyAreaName with SPDF/SP

@@ -18,8 +18,8 @@ studyAreaName(studyArea, ...)
 \item{...}{Other arguments (not currently used)}
 }
 \value{
-A character string using the \code{.robustDigest} of the \code{studyArea}. This is only intended
-for use with spatial objects.
+A character string using the \code{.robustDigest} of the \code{studyArea} and optionally \code{rasterToMatch}.
+This is only intended for use with spatial objects.
 }
 \description{
 Digest a spatial object to get a unique character string (hash) of the study area.

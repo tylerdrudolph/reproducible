@@ -87,8 +87,9 @@ paddedFloatToChar <- function(x, padL = ceiling(log10(x + 1)), padR = 3, pad = "
 #'
 #' @export
 #' @return
-#' A character string using the `.robustDigest` of the `studyArea`. This is only intended
-#' for use with spatial objects.
+#' A character string using the `.robustDigest` of the `studyArea` and optionally `rasterToMatch`.
+#' This is only intended for use with spatial objects.
+#' @importFrom terra ncell
 #' @examples
 #' studyAreaName("Ontario")
 setGeneric("studyAreaName", function(studyArea, ...) {
@@ -112,8 +113,15 @@ setMethod(
   "studyAreaName",
   signature = "character",
   definition = function(studyArea, ...) {
+
     sort(studyArea) ## ensure consistent hash for same subset of study area names
-    .robustDigest(studyArea, algo = "xxhash64") ## TODO: use `...` to pass `algo`
+
+    hash <- .robustDigest(studyArea, algo = "xxhash64") ## TODO: use `...` to pass `algo`
+    dots <- list(...)
+    if (!is.null(dots$rasterToMatch)) {
+      hash <- paste0(hash, "_", "npix_", ncell(dots$rasterToMatch))
+    }
+    return(hash)
   }
 )
 
@@ -134,7 +142,12 @@ setMethod(
                  inherits(studyArea, "SpatVector") || is.character(studyArea))) {
       stop("studyAreaName expects a spatialClasses object (or character vector)")
     }
-    .robustDigest(studyArea, algo = "xxhash64") ## TODO: use `...` to pass `algo`
+    hash <- .robustDigest(studyArea, algo = "xxhash64") ## TODO: use `...` to pass `algo`
+    dots <- list(...)
+    if (!is.null(dots$rasterToMatch)) {
+      hash <- paste0(hash, "_", "npix_", ncell(dots$rasterToMatch))
+    }
+    return(hash)
   }
 )
 
